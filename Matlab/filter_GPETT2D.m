@@ -138,12 +138,12 @@ function [covMatrixDerivative] = compute_GP_covariance_derivative(argArray1, arg
 end
 
 % Numeric derivative for verification
-function [covMatrix] = compute_GP_covariance_derivative_numeric(argArray1, argArray2, paramGP, eps)
+function [covMatrixDerivative] = compute_GP_covariance_derivative_numeric(argArray1, argArray2, paramGP, eps)
     vec_len1 = size(argArray1, 1);
     vec_len2 = size(argArray2, 1);
-    covMatrix = zeros(vec_len1, vec_len2);
+    covMatrixDerivative = zeros(vec_len1, vec_len2);
     for i = 1:vec_len1
-        covMatrix(i, :) = (compute_GP_covariance(argArray1(i)+eps/2, argArray2, paramGP) ...
+        covMatrixDerivative(i, :) = (compute_GP_covariance(argArray1(i)+eps/2, argArray2, paramGP) ...
             - compute_GP_covariance(argArray1(i)-eps/2, argArray2, paramGP))/eps;
    end
 end
