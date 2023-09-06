@@ -101,8 +101,7 @@ for i = 1:curNumMeas
     
     % Obtain the linearized model (Details in the Appendix B of the mentioned paper)
     dP_dW = ((diffVector*diffVector')./ diffVectorMag^3 - eye(2)./diffVectorMag);
-    dHf_du = -1/ lengthScaleGP^2 * sin(angleLocal - basisAngleArray') .* covMeasBasis...
-        * inv_P0_extent;
+    dHf_du = compute_GP_covariance_derivative(angleLocal, basisAngleArray, paramGP) * inv_P0_extent;
     dThetaG_dw = 1/ diffVectorMag^2 * [diffVector(2) -diffVector(1)];
     
     H_lin_pos = eye(2) + dP_dW * (H_f * predExtent)...
@@ -126,4 +125,25 @@ estState = predState + kalmanGain * (curMeasArrayColumn - predMeas);
 estStateCov = (eye(numStates) - kalmanGain*linMeasMatrix) * predStateCov;
 estStateCov = (estStateCov + estStateCov')/2; % To make the covariance matrix symmetric (needed due to numeric errors)
 
+end
+
+
+% Corrected kernel derivative calculation as given in equation (57e)
+% Credit: Ege Keyvan
+% Code: Ali Emre Balcı
+function [covMatrixDerivative] = compute_GP_covariance_derivative(argArray1, argArray2, paramGP)
+    paramGP{3} = 0;
+    covMatrixDerivative = compute_GP_covariance(argArray1, argArray2, paramGP) ...
+        *(-1/paramGP{4}^2) .* sin(argArray1 - argArray2');
+end
+
+% Numeric derivative for verification
+function [covMatrix] = compute_GP_covariance_derivative_numeric(argArray1, argArray2, paramGP, eps)
+    vec_len1 = size(argArray1, 1);
+    vec_len2 = size(argArray2, 1);
+    covMatrix = zeros(vec_len1, vec_len2);
+    for i = 1:vec_len1
+        covMatrix(i, :) = (compute_GP_covariance(argArray1(i)+eps/2, argArray2, paramGP) ...
+            - compute_GP_covariance(argArray1(i)-eps/2, argArray2, paramGP))/eps;
+   end
 end
