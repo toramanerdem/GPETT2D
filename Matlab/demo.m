@@ -17,12 +17,12 @@ close all;
 
 %% Paramaters
 % Simulation parameters
-expDuration = 30;           % Experiment duration (in seconds)
+expDuration = 120;           % Experiment duration (in seconds)
 T = 1;                      % Sampling time (in seconds)
 numMeasPerInstant = 20;     % Number of point measurements acquired in an instant
 stdMeas = 0.1;              % Standart deviation of the measurements
 isMeasurementPartial = 0;	% Flag for partial measurement
-motionType = 2;             % 1: Still, 2: Constant velocity, 3: Sinusoidal motion
+motionType = 4;             % 1: Still, 2: Constant velocity, 3: Sinusoidal motion, 4: U-turn
 eps = 1e-6;                 % A small scalar
 % Object parameters
 objType = 2;                % objType = 1:Circle, 2:Square, 3:Triangle

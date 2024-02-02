@@ -35,6 +35,12 @@ gtDataLog = zeros(numIterations, 4); % : [timeStamp centerPosition' psi]
 
 positionObj = [0 0];    % Initialize the center position of the object
 orientationObj = -pi + 2* pi * rand; % Randomly select a constant orientation
+
+if motionType == 4
+    linearVel = 0.5;        %m/sec, magnitude of linear velocity
+    velocityObj = linearVel * [1 0];    %initiated as moves on the x-axis
+end
+
 for i = 1:numIterations
     
     curTime = (i-1)*timeStep;
@@ -48,6 +54,13 @@ for i = 1:numIterations
             
         case 3 % Sinusoidal motion
             velocityObj = [0.05 sin(0.01*2*pi*curTime)];
+
+        case 4 % U-turn 
+            angularVel = pi/60;    %rad/sec
+            if 30<i && i<91
+                rotationMatrix = [cos(angularVel) -sin(angularVel); sin(angularVel) cos(angularVel)];
+                velocityObj = (rotationMatrix * velocityObj.').';
+            end
     end
     positionObj = positionObj + timeStep * velocityObj;       
         
