@@ -34,10 +34,11 @@ measMatrix = zeros(numIterations*numMeasPerInstant, 3);
 gtDataLog = zeros(numIterations, 4); % : [timeStamp centerPosition' psi]
 
 positionObj = [0 0];    % Initialize the center position of the object
-orientationObj = -pi + 2* pi * rand; % Randomly select a constant orientation
+orientationObj = 0;     % Initialize theorientation of the object
+% orientationObj = -pi + 2* pi * rand; % Randomly select a constant orientation
 
 if motionType == 4
-    linearVel = 0.5;        %m/sec, magnitude of linear velocity
+    linearVel = 0.1;        %m/sec, magnitude of linear velocity
     velocityObj = linearVel * [1 0];    %initiated as moves on the x-axis
 end
 
@@ -60,6 +61,7 @@ for i = 1:numIterations
             if 30<i && i<91
                 rotationMatrix = [cos(angularVel) -sin(angularVel); sin(angularVel) cos(angularVel)];
                 velocityObj = (rotationMatrix * velocityObj.').';
+                orientationObj = orientationObj + angularVel * timeStep;
             end
     end
     positionObj = positionObj + timeStep * velocityObj;       
